@@ -1,0 +1,34 @@
+version: '2.2'
+services:
+  postgres:
+    container_name: bodydev_postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.pg
+    env_file: ./.env
+    volumes:
+      - bodymandb:/var/lib/postgresql/data
+  pgadmin_dev:
+    image: 'dpage/pgadmin4'
+    container_name: bodyman_pgadmin4_dev
+    restart: always
+    env_file: ./.env
+    ports:
+      - '3098:80'
+  bodymdev:
+    container_name: body_man_dev
+    build:
+      dockerfile: Dockerfile
+      context: ./java
+  nginx_body:
+     container_name: bodym_nginx_dev
+     depends_on:
+       - apidev
+     restart: always
+     build:
+       dockerfile: Dockerfile
+       context: ./nginx
+     ports:
+       - '4998:80'
+volumes:
+  bodymandb:
